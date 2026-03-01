@@ -1,2 +1,2 @@
-# admineasycrypto
-admineasycrypto
+# adminec
+adminec
