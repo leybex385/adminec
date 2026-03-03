@@ -1089,7 +1089,23 @@
     </style>
 </head>
 
-<body>
+<body class="bg-gray-50">
+    <!-- CORS/File Protocol Warning Banner -->
+    <div id="protocol-warning" class="hidden"
+        style="position: fixed; top: 0; left: 0; width: 100%; background: #ef4444; color: white; text-align: center; padding: 12px; z-index: 9999; font-weight: bold; font-family: sans-serif; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+        ⚠️ SECURITY ALERT: Admin Panel is blocked by CORS (Browser Security).
+        <br>
+        <span style="font-weight: normal; font-size: 0.9em;">Firebase will NOT work via <code>file://</code>. Please run
+            <code>server.bat</code> and go to:
+            <a href="http://localhost:8000/admin/admin.html"
+                style="color: #fff; text-decoration: underline;">http://localhost:8000/admin/admin.html</a></span>
+    </div>
+    <script>
+        if (window.location.protocol === 'file:') {
+            document.getElementById('protocol-warning').classList.remove('hidden');
+            console.error("CRITICAL: Firebase Module loading is blocked by Browser CORS policy when using file:// protocol. Use server.bat.");
+        }
+    </script>
     <div class="flex">
         <!-- Sidebar -->
         <aside class="sidebar w-64 fixed h-screen overflow-y-auto">
@@ -1110,16 +1126,9 @@
                         <span>Dashboard</span>
                     </div>
 
-                    <div class="text-white/40 text-xs uppercase font-semibold mt-6 mb-2 px-4">Users</div>
-
-                    <div class="sidebar-link" onclick="showSection('mobile-users')">
-                        <i class="ri-smartphone-line"></i>
-                        <span>Mobile Users</span>
-                    </div>
-
-                    <div class="sidebar-link" onclick="showSection('website-users')">
-                        <i class="ri-computer-line"></i>
-                        <span>Website Users</span>
+                    <div class="sidebar-link" onclick="showSection('all-users')">
+                        <i class="ri-user-settings-line"></i>
+                        <span>All Users</span>
                     </div>
 
                     <div class="text-white/40 text-xs uppercase font-semibold mt-6 mb-2 px-4">Trading</div>
@@ -1211,10 +1220,15 @@
             <!-- Dashboard Section -->
             <section id="dashboard" class="section active">
                 <div class="flex justify-between items-center mb-8">
-                    <div>
+                    <div class="flex items-center gap-4">
                         <h2 class="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
-                        <p class="text-gray-500">Welcome back! Here's what's happening today.</p>
+                        <div id="db-status-badge"
+                            class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-400 text-[10px] font-bold uppercase tracking-wider border border-gray-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+                            Connecting...
+                        </div>
                     </div>
+                    <p class="text-gray-500">Welcome back! Here's what's happening today.</p>
                     <div class="flex items-center gap-4">
                         <div class="flex items-center gap-2">
                             <div class="live-indicator"></div>
@@ -1228,7 +1242,8 @@
 
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-4 gap-6 mb-8">
-                    <div class="stat-card rounded-xl p-6">
+                    <div class="stat-card rounded-xl p-6 cursor-pointer hover:opacity-90 transition-opacity"
+                        onclick="showSection('all-users')">
                         <div class="flex items-center justify-between mb-4">
                             <i class="ri-user-line text-3xl opacity-80"></i>
                             <span class="text-white/60 text-sm">--%</span>
@@ -1237,22 +1252,24 @@
                         <p class="text-white/80 text-sm mt-1">Total Users</p>
                     </div>
 
-                    <div class="stat-card green rounded-xl p-6">
+                    <div class="stat-card green rounded-xl p-6 cursor-pointer hover:opacity-90 transition-opacity"
+                        onclick="showSection('kyc')">
                         <div class="flex items-center justify-between mb-4">
-                            <i class="ri-smartphone-line text-3xl opacity-80"></i>
+                            <i class="ri-shield-user-line text-3xl opacity-80"></i>
                             <span class="text-white/60 text-sm">--%</span>
                         </div>
                         <h3 class="text-3xl font-bold">0</h3>
-                        <p class="text-white/80 text-sm mt-1">Mobile Users</p>
+                        <p class="text-white/80 text-sm mt-1">Pending KYC</p>
                     </div>
 
-                    <div class="stat-card orange rounded-xl p-6">
+                    <div class="stat-card orange rounded-xl p-6 cursor-pointer hover:opacity-90 transition-opacity"
+                        onclick="showSection('withdrawals')">
                         <div class="flex items-center justify-between mb-4">
-                            <i class="ri-computer-line text-3xl opacity-80"></i>
+                            <i class="ri-hand-coin-line text-3xl opacity-80"></i>
                             <span class="text-white/60 text-sm">--%</span>
                         </div>
                         <h3 class="text-3xl font-bold">0</h3>
-                        <p class="text-white/80 text-sm mt-1">Website Users</p>
+                        <p class="text-white/80 text-sm mt-1">Pending Withdrawals</p>
                     </div>
 
                     <div class="stat-card red rounded-xl p-6">
@@ -1555,21 +1572,21 @@
                             <i class="ri-time-line text-yellow-600 text-2xl"></i>
                         </div>
                         <p class="text-gray-500 text-sm mb-1">Pending Review</p>
-                        <p class="text-2xl font-bold text-gray-800">0</p>
+                        <p class="text-2xl font-bold text-gray-800" id="kyc-pending-count">0</p>
                     </div>
                     <div class="card p-6 text-center">
                         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="ri-check-line text-green-600 text-2xl"></i>
                         </div>
                         <p class="text-gray-500 text-sm mb-1">Verified Today</p>
-                        <p class="text-2xl font-bold text-gray-800">0</p>
+                        <p class="text-2xl font-bold text-gray-800" id="kyc-verified-count">0</p>
                     </div>
                     <div class="card p-6 text-center">
                         <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="ri-close-line text-red-600 text-2xl"></i>
                         </div>
                         <p class="text-gray-500 text-sm mb-1">Rejected Today</p>
-                        <p class="text-2xl font-bold text-gray-800">0</p>
+                        <p class="text-2xl font-bold text-gray-800" id="kyc-rejected-count">0</p>
                     </div>
                 </div>
 
@@ -2043,20 +2060,20 @@
                 </div>
             </section>
 
-            <!-- Other Sections (Mobile Users, Website Users) -->
-            <section id="mobile-users" class="section">
+            <!-- Unified User Management Section -->
+            <section id="all-users" class="section">
                 <div class="flex justify-between items-center mb-8">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Mobile Users</h2>
-                        <p class="text-gray-500">Manage users from the mobile application</p>
+                        <h2 class="text-2xl font-bold text-gray-800">All Users</h2>
+                        <p class="text-gray-500">Manage all registered users across all platforms</p>
                     </div>
                     <div class="flex gap-4">
                         <div class="search-box">
                             <i class="ri-search-line"></i>
-                            <input type="text" placeholder="Search users..."
-                                class="border rounded-lg px-4 py-2 pl-10 w-64">
+                            <input type="text" placeholder="Search users by name, email, or ID..."
+                                class="border rounded-lg px-4 py-2 pl-10 w-80">
                         </div>
-                        <button class="delete-all-btn" onclick="deleteAllItems('mobileUsersTable')">
+                        <button class="delete-all-btn" onclick="deleteAllItems('allUsersTable')">
                             <i class="ri-delete-bin-line"></i> Delete All
                         </button>
                     </div>
@@ -2064,7 +2081,8 @@
 
                 <div class="filter-tabs">
                     <button class="filter-btn active">All Users</button>
-                    <button class="filter-btn">Active</button>
+                    <button class="filter-btn">Mobile Platform</button>
+                    <button class="filter-btn">Website Platform</button>
                     <button class="filter-btn">Pending KYC</button>
                     <button class="filter-btn">Suspended</button>
                 </div>
@@ -2075,6 +2093,7 @@
                             <thead>
                                 <tr>
                                     <th>User ID</th>
+                                    <th>Platform</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
@@ -2085,62 +2104,10 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="mobileUsersTable">
+                            <tbody id="allUsersTable">
                                 <tr>
-                                    <td colspan="9" class="text-center text-gray-400 py-12">
-                                        No mobile users registered.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section id="website-users" class="section">
-                <div class="flex justify-between items-center mb-8">
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Website Users</h2>
-                        <p class="text-gray-500">Manage users from the website platform</p>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="search-box">
-                            <i class="ri-search-line"></i>
-                            <input type="text" placeholder="Search users..."
-                                class="border rounded-lg px-4 py-2 pl-10 w-64">
-                        </div>
-                        <button class="delete-all-btn" onclick="deleteAllItems('websiteUsersTable')">
-                            <i class="ri-delete-bin-line"></i> Delete All
-                        </button>
-                    </div>
-                </div>
-
-                <div class="filter-tabs">
-                    <button class="filter-btn active">All Users</button>
-                    <button class="filter-btn">Active</button>
-                    <button class="filter-btn">Pending KYC</button>
-                    <button class="filter-btn">Suspended</button>
-                </div>
-
-                <div class="card">
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>User ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Balance</th>
-                                    <th>KYC Status</th>
-                                    <th>Status</th>
-                                    <th>Joined</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="websiteUsersTable">
-                                <tr>
-                                    <td colspan="8" class="text-center text-gray-400 py-12">
-                                        No website users registered.
+                                    <td colspan="10" class="text-center text-gray-400 py-12">
+                                        No users registered yet.
                                     </td>
                                 </tr>
                             </tbody>
@@ -2450,12 +2417,237 @@
     </div>
 
     <script type="module">
-        import { auth, signOut, checkSession } from '../firebase-config.js';
+        import { auth, signOut, checkSession, db, collection, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from '../firebase-config.js';
+
+        // Expose Firebase functions to window for UI handlers
+        window._db = db;
+        window._doc = doc;
+        window._getDoc = getDoc;
+        window._setDoc = setDoc;
 
         window.addEventListener('DOMContentLoaded', async () => {
-            const user = await checkSession(true);
-            // Optionally redirect if not admin
+            const isLoggedIn = sessionStorage.getItem('easycrypto_admin_auth');
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'admin_login.html';
+                return;
+            }
+            initUserSync();
         });
+
+        function initUserSync() {
+            const statusBadge = document.getElementById('db-status-badge');
+            const usersTable = document.getElementById('allUsersTable');
+            const totalUsersCard = document.querySelector('.stat-card:nth-child(1) h3');
+            const pendingKYCCard = document.querySelector('.stat-card:nth-child(2) h3');
+
+            const setStatus = (status, color) => {
+                statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-${color}-500"></span> ${status}`;
+                statusBadge.className = `flex items-center gap-1.5 px-3 py-1 rounded-full bg-${color}-50 text-${color}-600 text-[10px] font-bold uppercase tracking-wider border border-${color}-200`;
+            };
+
+            onSnapshot(collection(db, 'users'), (snapshot) => {
+                setStatus('Connected', 'green');
+                let html = '';
+                let totalUsers = 0;
+                let pendingKYC = 0;
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (doc.id === 'INITIAL_SETUP') return;
+
+                    totalUsers++;
+                    if (data.kyc_status === 'Pending') pendingKYC++;
+
+                    const joinedDate = data.joined ? new Date(data.joined).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '---';
+
+                    html += `
+                        <tr>
+                            <td class="font-mono text-xs">#${data.uid.substring(0, 8)}...</td>
+                            <td><span class="platform-badge platform-${data.platform ? data.platform.toLowerCase() : 'unknown'}">${data.platform || '??'}</span></td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <div class="avatar w-8 h-8 text-xs">${data.name ? data.name.substring(0, 2).toUpperCase() : '??'}</div>
+                                    <span class="font-medium">${data.name || 'Unknown User'}</span>
+                                </div>
+                            </td>
+                            <td>${data.email || data.phone || '---'}</td>
+                            <td>${data.phone || '---'}</td>
+                            <td class="font-medium text-purple-600">$${data.balance || '0.00'}</td>
+                            <td><span class="status-badge status-${data.kyc_status ? data.kyc_status.toLowerCase().replace(' ', '-') : 'none'}">${data.kyc_status || '---'}</span></td>
+                            <td><span class="status-badge ${data.status === 'Active' ? 'status-approved' : 'status-rejected'}">${data.status || '---'}</span></td>
+                            <td class="text-gray-500">${joinedDate}</td>
+                            <td>
+                                <div class="flex gap-2">
+                                    <button class="action-btn text-blue-600 hover:bg-blue-50" title="Edit" onclick="editUser('${data.uid}')"><i class="ri-edit-line"></i></button>
+                                    <button class="action-btn text-red-600 hover:bg-red-50" title="Delete" onclick="deleteUser('${data.uid}')"><i class="ri-delete-bin-line"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                if (totalUsers === 0) {
+                    usersTable.innerHTML = '<tr><td colspan="10" class="text-center text-gray-400 py-12">No data in "users" collection. Please register a NEW account or check Firebase Console.</td></tr>';
+                } else {
+                    usersTable.innerHTML = html;
+                }
+
+                totalUsersCard.innerText = totalUsers;
+                pendingKYCCard.innerText = pendingKYC;
+            }, (err) => {
+                setStatus('Error: Permission Denied', 'red');
+                console.error("Firestore Error:", err);
+            });
+
+            // Sync Pending Withdrawals
+            onSnapshot(collection(db, 'withdrawals'), (snapshot) => {
+                let pendingCount = 0;
+                snapshot.forEach(doc => {
+                    if (doc.data().status === 'Pending') pendingCount++;
+                });
+                document.querySelector('.stat-card:nth-child(3) h3').innerText = pendingCount;
+            });
+
+            // Sync Total Volume
+            onSnapshot(collection(db, 'trades'), (snapshot) => {
+                let totalVolume = 0;
+                snapshot.forEach(doc => {
+                    const amount = parseFloat(doc.data().amount) || 0;
+                    totalVolume += amount;
+                });
+                document.querySelector('.stat-card:nth-child(4) h3').innerText = `$${totalVolume.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            });
+
+            // Sync KYC Submissions
+            onSnapshot(collection(db, 'kyc_submissions'), (snapshot) => {
+                const kycTable = document.getElementById('kycTable');
+                let html = '';
+                let pendingCount = 0;
+                let verifiedCount = 0;
+                let rejectedCount = 0;
+
+                // Track objects in window for modal viewing
+                window.kycDataMap = window.kycDataMap || {};
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    window.kycDataMap[data.uid] = data;
+
+                    if (data.status === 'Pending') pendingCount++;
+                    if (data.status === 'Approved') verifiedCount++;
+                    if (data.status === 'Rejected') rejectedCount++;
+
+                    const submitDate = data.submitted_at ? new Date(data.submitted_at).toLocaleString() : '---';
+                    const name = data.real_name || 'Unknown';
+                    const nat = data.nationality || '---';
+
+                    let statusClass = 'bg-yellow-100 text-yellow-800';
+                    if (data.status === 'Approved') statusClass = 'bg-green-100 text-green-800';
+                    if (data.status === 'Rejected') statusClass = 'bg-red-100 text-red-800';
+
+                    html += `
+                        <tr>
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                                        ${name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">${name}</p>
+                                        <p class="text-xs text-gray-500">UID: #${data.uid.substring(0, 8)}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Mobile</span></td>
+                            <td>
+                                <p class="font-medium text-gray-800">Advanced ID</p>
+                                <p class="text-xs text-gray-500">${nat} / ${data.id_number}</p>
+                            </td>
+                            <td class="text-gray-500">${submitDate}</td>
+                            <td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass}">${data.status}</span></td>
+                            <td>
+                                <div class="flex gap-2">
+                                    <button class="action-btn text-blue-600 hover:bg-blue-50" title="View Documents" onclick="viewKYC('${data.uid}')"><i class="ri-eye-line"></i></button>
+                                    ${data.status === 'Pending' ? `
+                                        <button class="action-btn text-green-600 hover:bg-green-50" title="Approve" onclick="approveKYC('${data.uid}')"><i class="ri-check-line"></i></button>
+                                        <button class="action-btn text-red-600 hover:bg-red-50" title="Reject" onclick="rejectKYC('${data.uid}')"><i class="ri-close-line"></i></button>
+                                    ` : ''}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                if (html === '') {
+                    html = '<tr><td colspan="6" class="text-center text-gray-400 py-12">No KYC submissions found.</td></tr>';
+                }
+
+                kycTable.innerHTML = html;
+                document.getElementById('kyc-pending-count').innerText = pendingCount;
+                document.getElementById('kyc-verified-count').innerText = verifiedCount;
+                document.getElementById('kyc-rejected-count').innerText = rejectedCount;
+
+                // Also update the header pending badge
+                document.querySelector('.status-badge.status-pending').innerText = `${pendingCount} Pending`;
+            });
+        }
+
+        window.viewKYC = function (uid) {
+            const data = window.kycDataMap[uid];
+            if (!data) return alert("KYC data not found.");
+
+            document.getElementById('kycModalTitle').innerText = `KYC: ${data.real_name} (${data.nationality})`;
+            document.getElementById('kycFrontImg').src = data.front_image || '';
+            document.getElementById('kycBackImg').src = data.back_image || '';
+            document.getElementById('kycModal').classList.remove('hidden');
+        };
+
+        window.closeKYCModal = function () {
+            document.getElementById('kycModal').classList.add('hidden');
+        };
+
+        window.approveKYC = async function (uid) {
+            if (confirm("Are you sure you want to approve this KYC submission?")) {
+                try {
+                    const data = window.kycDataMap[uid];
+                    await updateDoc(doc(db, 'kyc_submissions', uid), { status: 'Approved' });
+                    // Give them a "Verified" badge and set their display name to their real name
+                    await updateDoc(doc(db, 'users', uid), {
+                        kyc_status: 'Verified',
+                        name: data.real_name
+                    });
+                } catch (error) {
+                    console.error("KYC Approval Error:", error);
+                    alert("Approval failed: " + error.message);
+                }
+            }
+        };
+
+        window.rejectKYC = async function (uid) {
+            if (confirm("Are you sure you want to REJECT this KYC submission?")) {
+                try {
+                    await updateDoc(doc(db, 'kyc_submissions', uid), { status: 'Rejected' });
+                    await updateDoc(doc(db, 'users', uid), { kyc_status: 'Rejected' });
+                } catch (error) {
+                    console.error("KYC Rejection Error:", error);
+                    alert("Rejection failed: " + error.message);
+                }
+            }
+        };
+
+        window.editUser = function (uid) {
+            alert('Edit user functionality coming soon for user: ' + uid);
+        };
+
+        window.deleteUser = async function (uid) {
+            if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                try {
+                    await deleteDoc(doc(db, 'users', uid));
+                } catch (err) {
+                    alert('Delete failed: ' + err.message);
+                }
+            }
+        };
 
         window.fire_handleLogout = async function () {
             if (confirm('Are you sure you want to log out?')) {
@@ -2474,7 +2666,14 @@
                 link.classList.remove('active');
             });
             document.getElementById(sectionId).classList.add('active');
-            event.currentTarget.classList.add('active');
+
+            // Correctly highlight the corresponding sidebar link
+            const targetLink = Array.from(document.querySelectorAll('.sidebar-link')).find(link =>
+                link.getAttribute('onclick') && link.getAttribute('onclick').includes(`'${sectionId}'`)
+            );
+            if (targetLink) {
+                targetLink.classList.add('active');
+            }
         }
 
         // Delete Functions
@@ -2648,7 +2847,7 @@
                 newMessage.className = 'chat-message admin';
                 const now = new Date();
                 const timeString = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                newMessage.innerHTML = `<div><div class="chat-bubble"><p>${message}</p></div><p class="chat-message-time">${timeString}</p></div><div class="avatar w-8 h-8 text-xs">AD</div>`;
+                newMessage.innerHTML = `<div><div class="chat-bubble"><p>${message}</p></div><p class="chat-message-time">${timeString}</p></div> <div class="avatar w-8 h-8 text-xs">AD</div>`;
                 chatMessages.appendChild(newMessage);
                 input.value = '';
                 chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -2710,16 +2909,16 @@
         }
 
         // Settings Functions
-        function saveAllSettings() {
+        window.saveAllSettings = function () {
             const settingsSection = document.getElementById('settings');
             if (settingsSection && settingsSection.classList.contains('active')) {
-                handlePasswordChange();
+                window.handlePasswordChange();
             } else {
                 if (confirm('Save all settings changes?')) {
                     alert('All settings saved successfully!');
                 }
             }
-        }
+        };
 
         function togglePasswordVisibility(id) {
             const input = document.getElementById(id);
@@ -2733,7 +2932,7 @@
             }
         }
 
-        function updatePasswordStrength() {
+        window.updatePasswordStrength = function () {
             const password = document.getElementById('newPassword').value;
             const bar = document.getElementById('strengthBar');
             const text = document.getElementById('strengthText');
@@ -2746,32 +2945,32 @@
 
             if (password.length === 0) {
                 bar.style.width = '0';
-                text.textContent = 'Weak';
                 text.className = 'text-gray-400';
+                text.textContent = 'Weak';
             } else if (strength <= 1) {
                 bar.style.width = '25%';
                 bar.className = 'h-full bg-red-500 transition-all duration-300';
-                text.textContent = 'Weak';
                 text.className = 'text-red-500';
+                text.textContent = 'Weak';
             } else if (strength === 2) {
                 bar.style.width = '50%';
                 bar.className = 'h-full bg-orange-500 transition-all duration-300';
-                text.textContent = 'Medium';
                 text.className = 'text-orange-500';
+                text.textContent = 'Medium';
             } else if (strength === 3) {
                 bar.style.width = '75%';
                 bar.className = 'h-full bg-yellow-500 transition-all duration-300';
-                text.textContent = 'Strong';
                 text.className = 'text-yellow-500';
+                text.textContent = 'Strong';
             } else {
                 bar.style.width = '100%';
                 bar.className = 'h-full bg-green-500 transition-all duration-300';
-                text.textContent = 'Very Strong';
                 text.className = 'text-green-500';
+                text.textContent = 'Very Strong';
             }
-        }
+        };
 
-        function handlePasswordChange() {
+        window.handlePasswordChange = async function () {
             const current = document.getElementById('currentPassword').value;
             const newPass = document.getElementById('newPassword').value;
             const confirmPass = document.getElementById('confirmPassword').value;
@@ -2789,31 +2988,42 @@
                 return;
             }
 
-            // Get current password from localStorage or use default
-            const savedPassword = localStorage.getItem('adminPassword') || 'admin123';
+            try {
+                const credDocRef = window._doc(window._db, 'admin_settings', 'credentials');
+                const credDoc = await window._getDoc(credDocRef);
 
-            if (current !== savedPassword) {
-                alert('Incorrect current password');
-                return;
-            }
-
-            // Save new password to localStorage
-            localStorage.setItem('adminPassword', newPass);
-
-            alert('Password changed successfully!');
-            document.getElementById('changePasswordForm').reset();
-            updatePasswordStrength();
-        }
-
-        function handleLogout() {
-            if (window.fire_handleLogout) {
-                window.fire_handleLogout();
-            } else {
-                if (confirm('Are you sure you want to log out?')) {
-                    window.location.href = 'admin_login.html';
+                let savedPassword = 'admin123';
+                let savedUsername = 'admin';
+                if (credDoc.exists()) {
+                    savedPassword = credDoc.data().password;
+                    savedUsername = credDoc.data().username;
                 }
+
+                if (current !== savedPassword) {
+                    alert('Incorrect current password');
+                    return;
+                }
+
+                await window._setDoc(credDocRef, {
+                    username: savedUsername,
+                    password: newPass
+                });
+
+                alert('Password changed successfully! You may want to log out to test it.');
+                document.getElementById('changePasswordForm').reset();
+                window.updatePasswordStrength();
+            } catch (e) {
+                console.error("Error updating password:", e);
+                alert('Error connecting to database. Could not change password.');
             }
-        }
+        };
+
+        window.handleLogout = function () {
+            if (confirm('Are you sure you want to log out?')) {
+                sessionStorage.removeItem('easycrypto_admin_auth');
+                window.location.href = 'admin_login.html';
+            }
+        };
 
         // KYC Functions
         function approveKYC() { if (confirm('Approve this KYC?')) alert('KYC approved!'); }
@@ -2848,7 +3058,7 @@
             document.getElementById('qrCrypto').textContent = crypto;
             document.getElementById('qrNetwork').textContent = network;
             document.getElementById('qrAddress').textContent = address;
-            document.getElementById('qrModalImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=230x230&data=${encodeURIComponent(address)}`;
+            document.getElementById('qrModalImage').src = 'https://api.qrserver.com/v1/create-qr-code/?size=230x230&data=' + encodeURIComponent(address);
             document.getElementById('qrModal').classList.add('active');
         }
 
@@ -2898,6 +3108,43 @@
             }
         });
     </script>
+
+    <!-- KYC Image Modal -->
+    <div id="kycModal" class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-[1000px] max-w-full flex flex-col">
+            <div class="flex justify-between items-center mb-4 border-b pb-4 shrink-0">
+                <h2 class="text-xl font-bold text-gray-800" id="kycModalTitle">KYC Documents</h2>
+                <button onclick="closeKYCModal()"
+                    class="text-gray-500 hover:text-gray-800 text-3xl leading-none font-bold">&times;</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Front ID -->
+                <div class="flex flex-col">
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Front of ID</h3>
+                    <div
+                        class="bg-gray-50 rounded-lg border p-2 flex justify-center items-center h-[50vh] min-h-[300px]">
+                        <img id="kycFrontImg" src="" alt="Front ID"
+                            class="max-w-full max-h-full object-contain rounded">
+                    </div>
+                </div>
+
+                <!-- Back ID -->
+                <div class="flex flex-col">
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Back of ID</h3>
+                    <div
+                        class="bg-gray-50 rounded-lg border p-2 flex justify-center items-center h-[50vh] min-h-[300px]">
+                        <img id="kycBackImg" src="" alt="Back ID" class="max-w-full max-h-full object-contain rounded">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-4 border-t pt-4">
+                <button onclick="closeKYCModal()"
+                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 font-medium transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
