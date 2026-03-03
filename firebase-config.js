@@ -54,4 +54,3 @@ async function handleLogout() {
 window.handleLogout = handleLogout; // Expose for inline onclick handlers
 
 export { auth, db, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, RecaptchaVerifier, signInWithPhoneNumber, collection, addDoc, getDocs, onSnapshot, doc, setDoc, getDoc, updateDoc, deleteDoc, query, where, orderBy, serverTimestamp, increment, checkSession, logError };
-
