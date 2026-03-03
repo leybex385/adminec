@@ -105,6 +105,22 @@
 </head>
 
 <body class="login-container flex items-center justify-center p-4 grid-pattern">
+    <!-- CORS/File Protocol Warning Banner -->
+    <div id="protocol-warning" class="hidden"
+        style="position: fixed; top: 0; left: 0; width: 100%; background: #ef4444; color: white; text-align: center; padding: 12px; z-index: 9999; font-weight: bold; font-family: sans-serif; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+        ⚠️ SECURITY ALERT: Admin Login is blocked by CORS.
+        <br>
+        <span style="font-weight: normal; font-size: 0.9em;">Firebase will NOT work via <code>file://</code>. Please run
+            <code>server.bat</code> and go to:
+            <a href="http://localhost:8000/admin/admin_login.html"
+                style="color: #fff; text-decoration: underline;">http://localhost:8000/admin/admin_login.html</a></span>
+    </div>
+    <script>
+        if (window.location.protocol === 'file:') {
+            document.getElementById('protocol-warning').classList.remove('hidden');
+            console.error("CRITICAL: Firebase Module loading is blocked by Browser CORS policy. Use server.bat.");
+        }
+    </script>
     <div class="login-card w-full max-w-md p-8">
         <!-- Logo/Header -->
         <div class="text-center mb-8">
@@ -121,24 +137,24 @@
 
         <!-- Login Form -->
         <form id="loginForm" class="space-y-6">
-            <!-- Email Field -->
+            <!-- Username Field -->
             <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+                    Username
                 </label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207">
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                             </path>
                         </svg>
                     </div>
-                    <input type="email" id="email" name="email"
+                    <input type="text" id="username" name="username"
                         class="input-field w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                        placeholder="admin@example.com" required>
+                        placeholder="admin" required>
                 </div>
-                <p id="emailError" class="text-red-500 text-xs mt-1 hidden"></p>
+                <p id="usernameError" class="text-red-500 text-xs mt-1 hidden"></p>
             </div>
 
             <!-- Password Field -->
@@ -203,11 +219,11 @@
     </div>
 
     <script type="module">
-        import { auth, signInWithEmailAndPassword } from '../firebase-config.js';
+        import { db, doc, getDoc, setDoc } from '../firebase-config.js';
 
         // DOM Elements
         const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
+        const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const togglePassword = document.getElementById('togglePassword');
         const submitBtn = document.getElementById('submitBtn');
@@ -216,7 +232,7 @@
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
         const errorText = document.getElementById('errorText');
-        const emailError = document.getElementById('emailError');
+        const usernameError = document.getElementById('usernameError');
         const passwordError = document.getElementById('passwordError');
 
         // Toggle Password Visibility
@@ -236,11 +252,7 @@
             }
         });
 
-        // Validate Email
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
+
 
         // Show Error
         function showError(message) {
@@ -255,7 +267,7 @@
         // Hide Errors
         function hideErrors() {
             errorMessage.classList.add('hidden');
-            emailError.classList.add('hidden');
+            usernameError.classList.add('hidden');
             passwordError.classList.add('hidden');
         }
 
@@ -279,18 +291,18 @@
             e.preventDefault();
             hideErrors();
 
-            const email = emailInput.value.trim();
+            const username = usernameInput.value.trim();
             const password = passwordInput.value;
 
-            if (!validateEmail(email)) {
-                emailError.textContent = 'Please enter a valid email address';
-                emailError.classList.remove('hidden');
-                emailInput.focus();
+            if (!username) {
+                usernameError.textContent = 'Please enter a username';
+                usernameError.classList.remove('hidden');
+                usernameInput.focus();
                 return;
             }
 
-            if (password.length < 6) {
-                passwordError.textContent = 'Password must be at least 6 characters';
+            if (!password) {
+                passwordError.textContent = 'Please enter a password';
                 passwordError.classList.remove('hidden');
                 passwordInput.focus();
                 return;
@@ -299,38 +311,60 @@
             setLoading(true);
 
             try {
-                await signInWithEmailAndPassword(auth, email, password);
-                successMessage.classList.remove('hidden');
-                successMessage.classList.add('success-message');
+                const credDocRef = doc(db, 'admin_settings', 'credentials');
+                const credDoc = await getDoc(credDocRef);
 
-                setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 1000);
+                let validUsername = 'admin';
+                let validPassword = 'admin123';
+
+                if (credDoc.exists()) {
+                    validUsername = credDoc.data().username;
+                    validPassword = credDoc.data().password;
+                } else {
+                    // Initialize if missing
+                    await setDoc(credDocRef, {
+                        username: 'admin',
+                        password: 'admin123'
+                    });
+                }
+
+                if (username === validUsername && password === validPassword) {
+                    sessionStorage.setItem('easycrypto_admin_auth', 'true');
+                    successMessage.classList.remove('hidden');
+                    successMessage.classList.add('success-message');
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 1000);
+                } else {
+                    showError('Invalid username or password.');
+                    setLoading(false);
+                }
             } catch (error) {
-                showError('Invalid email or password.');
+                console.error("Login Error:", error);
+                showError('Error validating credentials. Please check connection and try again.');
                 setLoading(false);
             }
         });
 
-        emailInput.addEventListener('blur', () => {
-            if (emailInput.value && !validateEmail(emailInput.value)) {
-                emailError.textContent = 'Please enter a valid email address';
-                emailError.classList.remove('hidden');
+        usernameInput.addEventListener('blur', () => {
+            if (!usernameInput.value.trim()) {
+                usernameError.textContent = 'Please enter a username';
+                usernameError.classList.remove('hidden');
             } else {
-                emailError.classList.add('hidden');
+                usernameError.classList.add('hidden');
             }
         });
 
         passwordInput.addEventListener('blur', () => {
-            if (passwordInput.value && passwordInput.value.length < 6) {
-                passwordError.textContent = 'Password must be at least 6 characters';
+            if (!passwordInput.value) {
+                passwordError.textContent = 'Please enter a password';
                 passwordError.classList.remove('hidden');
             } else {
                 passwordError.classList.add('hidden');
             }
         });
 
-        emailInput.addEventListener('input', () => emailError.classList.add('hidden'));
+        usernameInput.addEventListener('input', () => usernameError.classList.add('hidden'));
         passwordInput.addEventListener('input', () => passwordError.classList.add('hidden'));
     </script>
 </body>
