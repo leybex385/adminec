@@ -1248,7 +1248,7 @@
                             <i class="ri-user-line text-3xl opacity-80"></i>
                             <span class="text-white/60 text-sm">--%</span>
                         </div>
-                        <h3 class="text-3xl font-bold" id="db-total-users">0</h3>
+                        <h3 class="text-3xl font-bold">0</h3>
                         <p class="text-white/80 text-sm mt-1">Total Users</p>
                     </div>
 
@@ -1258,7 +1258,7 @@
                             <i class="ri-shield-user-line text-3xl opacity-80"></i>
                             <span class="text-white/60 text-sm">--%</span>
                         </div>
-                        <h3 class="text-3xl font-bold" id="db-pending-kyc">0</h3>
+                        <h3 class="text-3xl font-bold">0</h3>
                         <p class="text-white/80 text-sm mt-1">Pending KYC</p>
                     </div>
 
@@ -1268,7 +1268,7 @@
                             <i class="ri-hand-coin-line text-3xl opacity-80"></i>
                             <span class="text-white/60 text-sm">--%</span>
                         </div>
-                        <h3 class="text-3xl font-bold" id="db-pending-withdrawals">0</h3>
+                        <h3 class="text-3xl font-bold">0</h3>
                         <p class="text-white/80 text-sm mt-1">Pending Withdrawals</p>
                     </div>
 
@@ -1277,7 +1277,7 @@
                             <i class="ri-wallet-line text-3xl opacity-80"></i>
                             <span class="text-white/60 text-sm">--%</span>
                         </div>
-                        <h3 class="text-3xl font-bold" id="db-total-volume">$0.00</h3>
+                        <h3 class="text-3xl font-bold">$0.00</h3>
                         <p class="text-white/80 text-sm mt-1">Total Volume</p>
                     </div>
                 </div>
@@ -1338,7 +1338,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-500 text-sm">Total Deposits</p>
-                                <p class="text-xl font-bold text-gray-800" id="db-total-deposits">$0.00</p>
+                                <p class="text-xl font-bold text-gray-800">$0.00</p>
                             </div>
                         </div>
                     </div>
@@ -1750,12 +1750,12 @@
                 </div>
 
                 <div class="filter-tabs">
-                    <button class="filter-btn active" onclick="setDepositFilter('All', this)">All Vouchers</button>
-                    <button class="filter-btn" onclick="setDepositFilter('Pending', this)">Pending</button>
-                    <button class="filter-btn" onclick="setDepositFilter('Approved', this)">Approved</button>
-                    <button class="filter-btn" onclick="setDepositFilter('Rejected', this)">Rejected</button>
-                    <button class="filter-btn" onclick="setDepositFilter('Mobile', this)">Mobile Users</button>
-                    <button class="filter-btn" onclick="setDepositFilter('Website', this)">Website Users</button>
+                    <button class="filter-btn active">All Vouchers</button>
+                    <button class="filter-btn">Pending</button>
+                    <button class="filter-btn">Approved</button>
+                    <button class="filter-btn">Rejected</button>
+                    <button class="filter-btn">Mobile Users</button>
+                    <button class="filter-btn">Website Users</button>
                 </div>
 
                 <div class="card">
@@ -1765,11 +1765,12 @@
                                 <tr>
                                     <th>Voucher ID</th>
                                     <th>User</th>
-                                    <th>Amount</th>
+                                    <th>Platform</th>
                                     <th>Crypto</th>
+                                    <th>Amount</th>
                                     <th>Voucher</th>
-                                    <th>Date</th>
                                     <th>Status</th>
+                                    <th>Submitted</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -2250,11 +2251,6 @@
                                 <option value="BTC">BTC (Bitcoin)</option>
                                 <option value="ETH">ETH (Ethereum)</option>
                                 <option value="SOL">SOL (Solana)</option>
-                                <option value="USDC">USDC (USD Coin)</option>
-                                <option value="DOGE">DOGE (Dogecoin)</option>
-                                <option value="BNB">BNB (Binance Coin)</option>
-                                <option value="XRP">XRP (Ripple)</option>
-                                <option value="TRX">TRX (TRON)</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -2264,10 +2260,7 @@
                                 <option value="ERC20">ERC20</option>
                                 <option value="TRC20">TRC20</option>
                                 <option value="BEP20">BEP20</option>
-                                <option value="BEP2">BEP2</option>
                                 <option value="Bitcoin">Bitcoin</option>
-                                <option value="Dogecoin">Dogecoin</option>
-                                <option value="XRP Ledger">XRP Ledger</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -2283,13 +2276,6 @@
                             </label>
                             <span class="ml-2 text-sm text-gray-500">Active</span>
                         </div>
-                        <div class="form-group">
-                            <label>QR Data Format</label>
-                            <select id="qrFormat" class="border rounded-lg px-4 py-2">
-                                <option value="plain">Plain Address (Recommended for all wallets)</option>
-                                <option value="smart">Smart Wallet (with tron:/ethereum: prefix)</option>
-                            </select>
-                        </div>
                     </div>
                     <div>
                         <div class="form-group">
@@ -2298,7 +2284,7 @@
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=EnterAddress"
                                     alt="QR Preview" id="qrPreviewImage">
                             </div>
-                            <button class="btn-secondary w-full mt-4" onclick="window.generateQRCode()">
+                            <button class="btn-secondary w-full mt-4" onclick="generateQRCode()">
                                 <i class="ri-refresh-line mr-2"></i>Generate QR Code
                             </button>
                         </div>
@@ -2307,8 +2293,44 @@
             </div>
             <div class="modal-footer">
                 <button onclick="closeModal('depositModal')" class="btn-secondary">Cancel</button>
-                <button class="btn-primary" onclick="window.saveDepositAddress()">
+                <button class="btn-primary" onclick="saveDepositAddress()">
                     <i class="ri-save-line mr-2"></i>Save Deposit Address
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Close Price Modal -->
+    <div class="modal-overlay" id="overridePriceModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-gray-800">Set Custom Close Price</h3>
+                <button onclick="closeModal('overridePriceModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="ri-close-line text-2xl"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="overrideTradeId">
+                <div class="form-group">
+                    <label>Position</label>
+                    <p id="overridePositionLabel" class="font-bold text-purple-600">BTC/USDT Perpetual Long</p>
+                </div>
+                <div class="form-group">
+                    <label>Entry Price</label>
+                    <p id="overrideEntryPrice" class="text-gray-500">---</p>
+                </div>
+                <div class="form-group">
+                    <label>Custom Closing Price *</label>
+                    <input type="number" id="customClosePriceInput" step="0.0001"
+                        placeholder="Enter price to force win/loss" class="border rounded-lg px-4 py-2">
+                    <p class="text-xs text-gray-400 mt-2">Setting this price will override the market price when the
+                        user or system closes the position.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('overridePriceModal')" class="btn-secondary">Cancel</button>
+                <button class="btn-primary" onclick="saveOverridePrice()">
+                    <i class="ri-check-line mr-2"></i>Apply Override
                 </button>
             </div>
         </div>
@@ -2431,20 +2453,18 @@
     </div>
 
     <script type="module">
-        import { auth, signOut, checkSession, db, collection, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc, query, orderBy, addDoc, serverTimestamp, increment } from './firebase-config.js';
+        import { auth, signOut, checkSession, db, collection, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from '../firebase-config.js';
 
         // Expose Firebase functions to window for UI handlers
         window._db = db;
         window._doc = doc;
         window._getDoc = getDoc;
         window._setDoc = setDoc;
-        window._updateDoc = updateDoc;
-        window._increment = increment;
 
         window.addEventListener('DOMContentLoaded', async () => {
             const isLoggedIn = sessionStorage.getItem('easycrypto_admin_auth');
             if (isLoggedIn !== 'true') {
-                window.location.href = 'index.html';
+                window.location.href = 'admin_login.html';
                 return;
             }
             initUserSync();
@@ -2462,7 +2482,6 @@
             };
 
             onSnapshot(collection(db, 'users'), (snapshot) => {
-                window.allUsersData = window.allUsersData || {};
                 setStatus('Connected', 'green');
                 let html = '';
                 let totalUsers = 0;
@@ -2471,7 +2490,6 @@
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     if (doc.id === 'INITIAL_SETUP') return;
-                    window.allUsersData[data.uid] = data;
 
                     totalUsers++;
                     if (data.kyc_status === 'Pending') pendingKYC++;
@@ -2510,23 +2528,11 @@
                     usersTable.innerHTML = html;
                 }
 
-                // Update Dashboard stats
-                const totalUsersEl = document.getElementById('db-total-users');
-                const pendingKYCEl = document.getElementById('db-pending-kyc');
-                if (totalUsersEl) totalUsersEl.innerText = totalUsers;
-                if (pendingKYCEl) pendingKYCEl.innerText = pendingKYC;
-
+                totalUsersCard.innerText = totalUsers;
+                pendingKYCCard.innerText = pendingKYC;
             }, (err) => {
                 setStatus('Error: Permission Denied', 'red');
                 console.error("Firestore Error:", err);
-            });
-
-            // Sync Deposit Vouchers
-            onSnapshot(collection(db, 'deposits'), (snapshot) => {
-                window.lastDepositSnapshot = snapshot;
-                renderDeposits(snapshot);
-            }, (error) => {
-                console.error("Admin: Deposit listener error:", error);
             });
 
             // Sync Pending Withdrawals
@@ -2535,79 +2541,17 @@
                 snapshot.forEach(doc => {
                     if (doc.data().status === 'Pending') pendingCount++;
                 });
-                const el = document.getElementById('db-pending-withdrawals');
-                if (el) el.innerText = pendingCount;
+                document.querySelector('.stat-card:nth-child(3) h3').innerText = pendingCount;
             });
 
-            // Sync Total Volume and Contracts
+            // Sync Total Volume
             onSnapshot(collection(db, 'trades'), (snapshot) => {
                 let totalVolume = 0;
-                let html = '';
-                let openCount = 0;
-                let pendingCount = 0;
-                let approvedCount = 0;
-                let rejectedCount = 0;
-
-                const contractsTable = document.getElementById('contractsTable');
-
                 snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const amount = parseFloat(data.amount) || 0;
+                    const amount = parseFloat(doc.data().amount) || 0;
                     totalVolume += amount;
-
-                    const status = data.status || 'Pending';
-                    if (status === 'Open') openCount++;
-                    else if (status === 'Pending') pendingCount++;
-                    else if (status === 'Approved') approvedCount++;
-                    else if (status === 'Rejected') rejectedCount++;
-
-                    let statusClass = 'bg-yellow-100 text-yellow-800';
-                    if (status === 'Approved' || status === 'Open') statusClass = 'bg-green-100 text-green-800';
-                    if (status === 'Rejected') statusClass = 'bg-red-100 text-red-800';
-
-                    const side = data.direction || data.side || '---';
-                    const sideClass = side.toLowerCase().includes('long') ? 'text-green-600' : 'text-red-600';
-
-                    html += `
-                        <tr class="border-b border-gray-100 hover:bg-gray-50">
-                            <td class="font-mono text-sm">#${doc.id.substring(0, 8)}</td>
-                            <td>
-                                <p class="font-medium text-gray-800">${data.user_email || data.user_uid?.substring(0, 8) || 'Unknown'}</p>
-                            </td>
-                            <td class="font-bold text-gray-800">${data.pair || data.coin}</td>
-                            <td class="font-semibold ${sideClass}">${side}</td>
-                            <td>${amount}</td>
-                            <td>$${parseFloat(data.price || 0).toLocaleString()}</td>
-                            <td>$${parseFloat(data.price || 0).toLocaleString()}</td>
-                            <td class="${sideClass}">$0.00</td>
-                            <td><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass}">${status}</span></td>
-                            <td>
-                                <div class="flex gap-2">
-                                    <button class="action-btn text-green-600 hover:bg-green-50" title="Approve" onclick="approveContract('${doc.id}')"><i class="ri-check-line"></i></button>
-                                    <button class="action-btn text-red-600 hover:bg-red-50" title="Reject" onclick="rejectContract('${doc.id}')"><i class="ri-close-line"></i></button>
-                                    <button class="action-btn text-blue-600 hover:bg-blue-50" title="Set Win" onclick="setDeliveryWin('${doc.id}')"><i class="ri-arrow-up-line"></i></button>
-                                    <button class="action-btn text-pink-600 hover:bg-pink-50" title="Set Loss" onclick="setDeliveryLoss('${doc.id}')"><i class="ri-arrow-down-line"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
                 });
-
-                const el = document.getElementById('db-total-volume');
-                if (el) el.innerText = `$${totalVolume.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
-                if (html === '') {
-                    html = '<tr><td colspan="10" class="text-center text-gray-400 py-12">No active contract positions.</td></tr>';
-                }
-                if (contractsTable) contractsTable.innerHTML = html;
-
-                const contractStats = document.querySelectorAll('#contracts .text-xl.font-bold');
-                if (contractStats.length >= 4) {
-                    contractStats[0].innerText = openCount;
-                    contractStats[1].innerText = pendingCount;
-                    contractStats[2].innerText = approvedCount;
-                    contractStats[3].innerText = rejectedCount;
-                }
+                document.querySelector('.stat-card:nth-child(4) h3').innerText = `$${totalVolume.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
             });
 
             // Sync KYC Submissions
@@ -2618,6 +2562,7 @@
                 let verifiedCount = 0;
                 let rejectedCount = 0;
 
+                // Track objects in window for modal viewing
                 window.kycDataMap = window.kycDataMap || {};
 
                 snapshot.forEach(doc => {
@@ -2678,124 +2623,100 @@
                 document.getElementById('kyc-verified-count').innerText = verifiedCount;
                 document.getElementById('kyc-rejected-count').innerText = rejectedCount;
 
+                // Also update the header pending badge
                 document.querySelector('.status-badge.status-pending').innerText = `${pendingCount} Pending`;
             });
 
-            // Sync Support Chats
-            onSnapshot(collection(db, 'support_chats'), (snapshot) => {
-                const messagesList = document.getElementById('messagesList');
+            // Sync Contracts (Perpetual Trades)
+            onSnapshot(collection(db, 'trades'), (snapshot) => {
+                const contractsTable = document.getElementById('contractsTable');
                 let html = '';
-                let totalUnread = 0;
+                let openCount = 0;
 
-                snapshot.forEach((doc) => {
+                window.tradeDataMap = window.tradeDataMap || {};
+
+                snapshot.forEach(doc => {
                     const data = doc.data();
-                    if (doc.id === 'INITIAL_SETUP') return;
+                    if (data.type !== 'Perpetual') return;
 
-                    totalUnread += (data.unread_count_admin || 0);
-                    const timestamp = data.timestamp?.toDate() || new Date();
-                    const timeStr = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    const isActive = window.currentChatUserId === doc.id;
+                    const tradeId = doc.id;
+                    window.tradeDataMap[tradeId] = { ...data, id: tradeId };
+
+                    if (data.status === 'Open') openCount++;
+
+                    const date = data.timestamp ? new Date(data.timestamp).toLocaleString() : '---';
+                    const directionColor = data.direction === 'Long' ? 'text-green-600' : 'text-red-600';
+
+                    // P/L Calculation for Admin view
+                    const currentPrice = window.allCoinsData && window.allCoinsData[data.coin] ? window.allCoinsData[data.coin].price : data.price;
+                    const entryPrice = parseFloat(data.price);
+                    const amount = parseFloat(data.amount);
+                    let pnl = 0;
+                    if (data.direction === 'Long') {
+                        pnl = (currentPrice - entryPrice) * (amount / entryPrice);
+                    } else {
+                        pnl = (entryPrice - currentPrice) * (amount / entryPrice);
+                    }
 
                     html += `
-                        <div class="message-item ${data.unread_count_admin > 0 ? 'unread' : ''} ${isActive ? 'active' : ''}" onclick="selectMessage('${doc.id}')">
-                            <div class="message-item-header">
-                                <span class="message-item-name">${data.user_name || 'User'}</span>
-                                <span class="message-item-time">${timeStr}</span>
-                            </div>
-                            <div class="message-item-preview">${data.last_message || 'No messages yet'}</div>
-                            <div class="message-item-platform">
-                                <span class="platform-badge platform-mobile">Mobile</span>
-                                ${data.unread_count_admin > 0 ? `<span class="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-2">${data.unread_count_admin}</span>` : ''}
-                            </div>
-                        </div>
+                        <tr>
+                            <td class="font-mono text-xs">#${tradeId.substring(0, 8)}</td>
+                            <td>UID: #${(data.uid || '---').substring(0, 8)}</td>
+                            <td class="font-bold">${data.coin}/USDT</td>
+                            <td class="${directionColor} font-bold">${data.direction}</td>
+                            <td>${data.amount} USDT</td>
+                            <td>${data.price}</td>
+                            <td>${currentPrice}</td>
+                            <td class="${pnl >= 0 ? 'text-green-600' : 'text-red-600'} font-bold">
+                                ${pnl >= 0 ? '+' : ''}${pnl.toFixed(2)}
+                                ${data.customClosePrice ? `<br><span class="text-[10px] text-orange-500 underline">Fixed @ ${data.customClosePrice}</span>` : ''}
+                            </td>
+                            <td><span class="status-badge status-${data.status.toLowerCase()}">${data.status}</span></td>
+                            <td>
+                                <div class="flex gap-2">
+                                    <button class="action-btn edit" title="Set Custom Price" onclick="openOverrideModal('${tradeId}')">
+                                        <i class="ri-edit-line"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
                     `;
                 });
 
                 if (html === '') {
-                    messagesList.innerHTML = '<div class="text-center py-12 text-gray-400"><p>No messages yet</p></div>';
-                } else {
-                    messagesList.innerHTML = html;
+                    html = '<tr><td colspan="11" class="text-center text-gray-400 py-12">No perpetual positions found.</td></tr>';
                 }
-                document.getElementById('unreadBadge').innerText = `${totalUnread} Unread`;
-            }, (err) => {
-                console.error("Support Chats Sync Error:", err);
-                if (err.code === 'permission-denied') {
-                    document.getElementById('messagesList').innerHTML = '<div class="text-center py-12 text-red-400"><p>Permission Denied. Please check Firestore Rules.</p></div>';
-                }
+                contractsTable.innerHTML = html;
+                document.querySelector('#contracts .stat-card:nth-child(1) h3').innerText = openCount;
             });
         }
 
-        let chatMessagesUnsubscribe = null;
-        window.currentChatUserId = null;
+        window.openOverrideModal = function (tradeId) {
+            const trade = window.tradeDataMap[tradeId];
+            if (!trade) return;
 
-        window.selectMessage = function (userId) {
-            window.currentChatUserId = userId;
-            const chatHeaderInfo = document.querySelector('.chat-user-info');
-            const chatMessages = document.getElementById('chatMessages');
+            document.getElementById('overrideTradeId').value = tradeId;
+            document.getElementById('overridePositionLabel').innerText = `${trade.coin}/USDT Perpetual ${trade.direction}`;
+            document.getElementById('overrideEntryPrice').innerText = `Entry: ${trade.price}`;
+            document.getElementById('customClosePriceInput').value = trade.customClosePrice || '';
+            document.getElementById('overridePriceModal').classList.add('active');
+        };
 
-            // Reset unread count for this user
-            updateDoc(doc(db, 'support_chats', userId), { unread_count_admin: 0 });
+        window.saveOverridePrice = async function () {
+            const tradeId = document.getElementById('overrideTradeId').value;
+            const customPrice = document.getElementById('customClosePriceInput').value;
 
-            // Update UI items to reflect active state
-            document.querySelectorAll('.message-item').forEach(el => el.classList.remove('active'));
-            // Note: the list will re-render via onSnapshot anyway
+            if (!customPrice) return alert("Please enter a custom price.");
 
-            // Setup real-time listener for this user's messages
-
-
-            const messagesRef = collection(db, 'support_chats', userId, 'messages');
-            const q = query(messagesRef, orderBy('timestamp', 'asc'));
-
-            if (chatMessagesUnsubscribe) chatMessagesUnsubscribe();
-
-            chatMessagesUnsubscribe = onSnapshot(q, async (snapshot) => {
-                // Update header info if we have a chat doc
-                const userSnap = await getDoc(doc(db, 'support_chats', userId));
-                if (userSnap.exists()) {
-                    const userData = userSnap.data();
-                    chatHeaderInfo.innerHTML = `
-                        <div class="avatar">${userData.user_name?.charAt(0).toUpperCase() || '?'}</div>
-                        <div>
-                            <h3 class="font-semibold text-gray-800">${userData.user_name || 'User'}</h3>
-                            <p class="text-sm text-gray-500">ID: ${userId.substring(0, 8)}...</p>
-                        </div>
-                    `;
-                }
-
-                chatMessages.innerHTML = '';
-                snapshot.forEach((msgDoc) => {
-                    const msg = msgDoc.data();
-                    const isUser = msg.sender === 'user';
-                    const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || '';
-
-                    const msgRow = document.createElement('div');
-                    msgRow.className = `chat-message ${isUser ? 'user' : 'admin'}`;
-
-                    if (msg.type === 'image') {
-                        msgRow.innerHTML = `
-                            <div class="chat-bubble-img p-2 bg-white rounded-lg border">
-                                <img src="${msg.text}" class="max-w-xs rounded shadow-sm">
-                                <div class="text-[10px] text-gray-400 mt-1">${time}</div>
-                            </div>
-                        `;
-                    } else {
-                        msgRow.innerHTML = `
-                            <div class="chat-bubble p-3 rounded-lg ${isUser ? 'bg-white border' : 'bg-purple-600 text-white'} shadow-sm max-w-md">
-                                <p>${msg.text}</p>
-                                <div class="text-[10px] ${isUser ? 'text-gray-400' : 'text-purple-200'} mt-1 text-right">${time}</div>
-                            </div>
-                        `;
-                    }
-
-                    // Style adjustments for admin messages (right aligned)
-                    if (!isUser) {
-                        msgRow.style.flexDirection = 'row-reverse';
-                    }
-
-                    chatMessages.appendChild(msgRow);
+            try {
+                await updateDoc(doc(db, 'trades', tradeId), {
+                    customClosePrice: parseFloat(customPrice)
                 });
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            });
+                alert("Custom close price set successfully. This will be used for final settlement.");
+                closeModal('overridePriceModal');
+            } catch (e) {
+                alert("Failed to save override: " + e.message);
+            }
         };
 
         window.viewKYC = function (uid) {
@@ -2842,54 +2763,7 @@
         };
 
         window.editUser = function (uid) {
-            const user = window.allUsersData[uid];
-            if (!user) {
-                alert("User data not found locally.");
-                return;
-            }
-
-            window.currentEditUid = uid;
-            document.getElementById('editUserName').value = user.name || '';
-            document.getElementById('editUserBalance').value = user.balance || 0;
-            document.getElementById('editUserStatus').value = user.status || 'Active';
-            document.getElementById('editUserKyc').value = user.kyc_status || 'None';
-            document.getElementById('editUserDeliveryRule').value = user.delivery_rule || 'normal';
-
-            document.getElementById('editUserModal').classList.add('active');
-        };
-
-        window.saveUserChanges = async function () {
-            const uid = window.currentEditUid;
-            if (!uid) return;
-
-            const btn = document.getElementById('saveUserBtn');
-            const originalText = btn.innerText;
-            btn.innerText = 'Saving...';
-            btn.disabled = true;
-
-            const name = document.getElementById('editUserName').value;
-            const balance = document.getElementById('editUserBalance').value;
-            const status = document.getElementById('editUserStatus').value;
-            const kyc = document.getElementById('editUserKyc').value;
-            const deliveryRule = document.getElementById('editUserDeliveryRule').value;
-
-            try {
-                await updateDoc(doc(db, 'users', uid), {
-                    name: name,
-                    balance: parseFloat(balance) || 0,
-                    status: status,
-                    kyc_status: kyc,
-                    delivery_rule: deliveryRule
-                });
-                alert('User details updated successfully!');
-                closeModal('editUserModal');
-            } catch (err) {
-                console.error("Update Error:", err);
-                alert("Failed to update user: " + err.message);
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
+            alert('Edit user functionality coming soon for user: ' + uid);
         };
 
         window.deleteUser = async function (uid) {
@@ -2902,184 +2776,12 @@
             }
         };
 
-        // Message Functions
-        window.sendMessage = async function () {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            const userId = window.currentChatUserId;
-
-            if (!text || !userId) return;
-
-            try {
-                // Add message to Firestore
-                await addDoc(collection(db, 'support_chats', userId, 'messages'), {
-                    text: text,
-                    sender: 'admin',
-                    timestamp: serverTimestamp(),
-                    type: 'text'
-                });
-
-                // Update last message in conversation and increment unread for user
-                await updateDoc(doc(db, 'support_chats', userId), {
-                    last_message: text,
-                    last_sender: 'admin',
-                    timestamp: serverTimestamp(),
-                    unread_count_user: increment(1)
-                });
-
-                input.value = '';
-            } catch (err) {
-                console.error("Error sending message:", err);
-                alert("Failed to send message: " + err.message);
-            }
-        }
-
-        window.handleKeyPress = function (event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-
-        // Deposit Address Functions
-        window.openAddDepositModal = function () {
-            document.getElementById('depositCrypto').value = 'USDT';
-            document.getElementById('depositNetwork').value = 'Solana';
-            document.getElementById('depositAddress').value = '';
-            document.getElementById('depositStatus').checked = true;
-            document.getElementById('qrPreviewImage').src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=EnterAddress';
-            document.getElementById('depositModal').classList.add('active');
-        };
-
-        window.viewQRCode = function (crypto, network, address) {
-            document.getElementById('qrCrypto').textContent = crypto;
-            document.getElementById('qrNetwork').textContent = network;
-            document.getElementById('qrAddress').textContent = address;
-            const qrData = window.getQrDataWithPrefix(address, network);
-            document.getElementById('qrModalImage').src = 'https://api.qrserver.com/v1/create-qr-code/?size=230x230&data=' + encodeURIComponent(qrData);
-            document.getElementById('qrModal').classList.add('active');
-        };
-
-
-        window.saveDepositAddress = async function () {
-            const crypto = document.getElementById('depositCrypto').value;
-            const network = document.getElementById('depositNetwork').value;
-            const address = document.getElementById('depositAddress').value.trim();
-            const isActive = document.getElementById('depositStatus').checked;
-
-            if (!address) {
-                alert('Please enter a wallet address');
-                return;
-            }
-
-            const format = document.getElementById('qrFormat').value;
-            const qrData = window.getQrDataWithPrefix(address, network, format);
-            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
-
-            try {
-                const coinRef = doc(db, 'deposit_addresses', crypto);
-                const coinSnap = await getDoc(coinRef);
-
-                let networks = {};
-                if (coinSnap.exists()) {
-                    networks = coinSnap.data().networks || {};
-                }
-
-                networks[network] = {
-                    address: address,
-                    qrCode: qrCodeUrl,
-                    qrFormat: format,
-                    status: isActive ? 'Active' : 'Inactive',
-                    updatedAt: serverTimestamp()
-                };
-
-                await setDoc(coinRef, {
-                    symbol: crypto,
-                    networks: networks,
-                    lastUpdated: serverTimestamp()
-                });
-
-                alert('Deposit address saved successfully to Database!');
-                window.closeModal('depositModal');
-            } catch (error) {
-                console.error("Error saving deposit address:", error);
-                alert("Failed to save: " + error.message);
+        window.fire_handleLogout = async function () {
+            if (confirm('Are you sure you want to log out?')) {
+                await signOut(auth);
+                window.location.href = 'admin_login.html';
             }
         };
-
-        window.loadDepositAddresses = function () {
-            onSnapshot(collection(db, 'deposit_addresses'), (snapshot) => {
-                const tableBody = document.getElementById('depositAddressesTable');
-                if (!tableBody) return;
-
-                tableBody.innerHTML = '';
-                let count = 0;
-
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const networks = data.networks || {};
-
-                    Object.entries(networks).forEach(([networkName, netData]) => {
-                        count++;
-                        const tr = document.createElement('tr');
-                        tr.className = 'border-b border-gray-100 hover:bg-gray-50';
-                        tr.innerHTML = `
-                            <td class="py-4 px-4 font-bold text-gray-800">${data.symbol}</td>
-                            <td class="py-4 px-4 text-gray-600">${networkName}</td>
-                            <td class="py-4 px-4 font-mono text-sm text-gray-500">${netData.address}</td>
-                            <td class="py-4 px-4 text-center">
-                                <span class="px-2 py-1 rounded-full text-xs font-semibold ${netData.status === 'Active' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}">
-                                    ${netData.status}
-                                </span>
-                            </td>
-                            <td class="py-4 px-4 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <button onclick="viewQRCode('${data.symbol}', '${networkName}', '${netData.address}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded" title="View QR">
-                                        <i class="ri-qr-code-line"></i>
-                                    </button>
-                                    <button onclick="deleteDepositAddress('${data.symbol}', '${networkName}')" class="p-2 text-red-600 hover:bg-red-50 rounded" title="Delete">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        `;
-                        tableBody.appendChild(tr);
-                    });
-                });
-
-                if (count === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-400 py-12">No deposit addresses configured in Database.</td></tr>';
-                }
-
-                const stats = document.querySelectorAll('.stat-box h2');
-                if (stats.length > 0) stats[0].innerText = count;
-            });
-        };
-
-        window.deleteDepositAddress = async function (symbol, network) {
-            if (!confirm(`Are you sure you want to delete the ${network} address for ${symbol}?`)) return;
-
-            try {
-                const coinRef = doc(db, 'deposit_addresses', symbol);
-                const coinSnap = await getDoc(coinRef);
-
-                if (coinSnap.exists()) {
-                    const networks = coinSnap.data().networks || {};
-                    delete networks[network];
-
-                    if (Object.keys(networks).length === 0) {
-                        await deleteDoc(coinRef);
-                    } else {
-                        await window.updateDoc(coinRef, { networks: networks });
-                    }
-                    alert('Deleted successfully!');
-                }
-            } catch (error) {
-                alert("Error deleting: " + error.message);
-            }
-        };
-
-        // Initialize Loading
-        window.loadDepositAddresses();
     </script>
     <script>
         // Section Navigation
@@ -3227,48 +2929,24 @@
         }
 
         // Contract Functions
-        window.approveContract = async function (tradeId) {
+        function approveContract(button) {
             if (confirm('Approve this contract position?')) {
-                try {
-                    await window._updateDoc(window._doc(window._db, 'trades', tradeId), { status: 'Approved' });
-                } catch (error) {
-                    alert('Error approving contract: ' + error.message);
-                }
+                const row = button.closest('tr');
+                row.querySelector('.status-badge').className = 'status-badge status-approved';
+                row.querySelector('.status-badge').textContent = 'Approved';
+                alert('Contract approved!');
             }
-        };
+        }
 
-        window.rejectContract = async function (tradeId) {
+        function rejectContract(button) {
             const reason = prompt('Enter rejection reason:');
-            if (reason !== null) {
-                try {
-                    await window._updateDoc(window._doc(window._db, 'trades', tradeId), { status: 'Rejected', rejection_reason: reason });
-                } catch (error) {
-                    alert('Error rejecting contract: ' + error.message);
-                }
+            if (reason) {
+                const row = button.closest('tr');
+                row.querySelector('.status-badge').className = 'status-badge status-rejected';
+                row.querySelector('.status-badge').textContent = 'Rejected';
+                alert('Contract rejected. Reason: ' + reason);
             }
-        };
-
-        window.setDeliveryWin = async function (tradeId) {
-            if (confirm('Force this contract to WIN?')) {
-                try {
-                    await window._updateDoc(window._doc(window._db, 'trades', tradeId), { admin_outcome: 'win' });
-                    alert('Contract set to WIN');
-                } catch (error) {
-                    alert('Error setting win: ' + error.message);
-                }
-            }
-        };
-
-        window.setDeliveryLoss = async function (tradeId) {
-            if (confirm('Force this contract to LOSE?')) {
-                try {
-                    await window._updateDoc(window._doc(window._db, 'trades', tradeId), { admin_outcome: 'loss' });
-                    alert('Contract set to LOSS');
-                } catch (error) {
-                    alert('Error setting loss: ' + error.message);
-                }
-            }
-        };
+        }
 
         // Messages Functions
         function filterMessages(filter) {
@@ -3287,7 +2965,25 @@
             updateUnreadCount();
         }
 
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (message) {
+                const chatMessages = document.getElementById('chatMessages');
+                const newMessage = document.createElement('div');
+                newMessage.className = 'chat-message admin';
+                const now = new Date();
+                const timeString = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                newMessage.innerHTML = `<div><div class="chat-bubble"><p>${message}</p></div><p class="chat-message-time">${timeString}</p></div> <div class="avatar w-8 h-8 text-xs">AD</div>`;
+                chatMessages.appendChild(newMessage);
+                input.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
 
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
 
         function showTemplates() {
             document.getElementById('templatesModal').classList.add('active');
@@ -3461,122 +3157,6 @@
         function rejectKYC() { const reason = prompt('Enter rejection reason:'); if (reason) alert('KYC rejected. Reason: ' + reason); }
 
         // Voucher Functions
-        // Voucher Functions
-        window.viewVoucherImage = function (base64) {
-            const win = window.open();
-            win.document.write(`<img src="${base64}" style="max-width:100%; height:auto;">`);
-        };
-
-        window.handleApproveDeposit = async function (id, uid, amount) {
-            if (!confirm(`Are you sure you want to approve this deposit of ${amount}? This will add funds to the user's balance.`)) return;
-
-            try {
-                // 1. Update deposit status
-                await window._updateDoc(window._doc(window._db, 'deposits', id), {
-                    status: 'Approved'
-                });
-
-                // 2. Increment user balance
-                await window._updateDoc(window._doc(window._db, 'users', uid), {
-                    balance: window._increment(amount)
-                });
-
-                alert("Deposit approved and balance updated!");
-            } catch (error) {
-                console.error("Approval error:", error);
-                alert("Action failed: " + error.message);
-            }
-        };
-
-        window.handleRejectDeposit = async function (id) {
-            const reason = prompt("Enter rejection reason:");
-            if (reason === null) return;
-            try {
-                await updateDoc(doc(db, 'deposits', id), {
-                    status: 'Rejected',
-                    rejection_reason: reason
-                });
-                alert('Deposit rejected.');
-            } catch (e) {
-                console.error("Error rejecting deposit:", e);
-                alert('Failed to reject deposit.');
-            }
-        };
-
-        window.depositFilter = 'All';
-        window.lastDepositSnapshot = null;
-
-        window.setDepositFilter = function (filter, btn) {
-            window.depositFilter = filter;
-            document.querySelectorAll('#deposit-vouchers .filter-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            if (window.lastDepositSnapshot) {
-                renderDeposits(window.lastDepositSnapshot);
-            }
-        };
-
-        function renderDeposits(snapshot) {
-            const tableBody = document.getElementById('depositVouchersTable');
-            let html = '';
-            let totalDeposits = 0;
-
-            snapshot.forEach(docSnap => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-
-                // Skip dummy/initial documents or documents without essential data
-                if (id.startsWith('#INITIAL') || !data.user_email) return;
-
-                // Apply status filter
-                if (window.depositFilter !== 'All') {
-                    if (['Pending', 'Approved', 'Rejected'].includes(window.depositFilter)) {
-                        if (data.status !== window.depositFilter) return;
-                    }
-                    // For Platform filters (if we had them, defaulting to show all for now)
-                }
-
-                const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : '---';
-
-                if (data.status === 'Approved') {
-                    totalDeposits += parseFloat(data.amount) || 0;
-                }
-
-                html += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#${id.substring(0, 8)}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${data.user_email}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">${data.amount} ${data.coin}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${data.chain}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <button onclick="viewVoucherImage('${data.voucher}')" class="text-purple-600 hover:text-purple-900 font-medium">View Image</button>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${date}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${data.status === 'Approved' ? 'bg-green-100 text-green-800' : (data.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800')}">
-                                ${data.status}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex justify-end gap-2">
-                                ${data.status === 'Pending' ? `
-                                    <button onclick="handleApproveDeposit('${id}', '${data.user_uid}', ${data.amount})" class="text-green-600 hover:text-green-900"><i class="ri-check-line text-lg"></i></button>
-                                    <button onclick="handleRejectDeposit('${id}')" class="text-red-600 hover:text-red-900"><i class="ri-close-line text-lg"></i></button>
-                                ` : ''}
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            if (tableBody) tableBody.innerHTML = html || '<tr><td colspan="8" class="text-center text-gray-400 py-12">No deposit vouchers found.</td></tr>';
-
-            // Update Total Deposits counter
-            const totalDepositsEl = document.getElementById('db-total-deposits');
-            if (totalDepositsEl) {
-                totalDepositsEl.innerText = `$${totalDeposits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} `;
-            }
-        }
-
         function viewVoucher(id) { alert('Viewing voucher: ' + id); }
         function approveVoucher() { if (confirm('Approve this voucher?')) alert('Voucher approved!'); }
         function rejectVoucher() { const reason = prompt('Enter rejection reason:'); if (reason) alert('Voucher rejected. Reason: ' + reason); }
@@ -3591,14 +3171,52 @@
         function rejectWithdrawal() { const reason = prompt('Enter rejection reason:'); if (reason) { alert('Withdrawal rejected. Reason: ' + reason); closeModal('withdrawalModal'); } }
         function copyWithdrawalAddress() { navigator.clipboard.writeText(document.getElementById('wAddress').textContent); alert('Address copied!'); }
 
-        // Deposit UI Helpers (Standard functions)
-        window.downloadQRCode = function () { alert('QR code download initiated'); };
-        window.copyAddressFromQR = function () { navigator.clipboard.writeText(document.getElementById('qrAddress').textContent); alert('Address copied!'); };
+        // Deposit Address Functions
+        function openAddDepositModal() {
+            document.getElementById('depositCrypto').value = 'USDT';
+            document.getElementById('depositNetwork').value = 'Solana';
+            document.getElementById('depositAddress').value = '';
+            document.getElementById('depositStatus').checked = true;
+            document.getElementById('qrPreviewImage').src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=EnterAddress';
+            document.getElementById('depositModal').classList.add('active');
+        }
+
+        function viewQRCode(crypto, network, address) {
+            document.getElementById('qrCrypto').textContent = crypto;
+            document.getElementById('qrNetwork').textContent = network;
+            document.getElementById('qrAddress').textContent = address;
+            document.getElementById('qrModalImage').src = 'https://api.qrserver.com/v1/create-qr-code/?size=230x230&data=' + encodeURIComponent(address);
+            document.getElementById('qrModal').classList.add('active');
+        }
+
+        function generateQRCode() {
+            const address = document.getElementById('depositAddress').value.trim();
+            if (address) {
+                document.getElementById('qrPreviewImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(address)}`;
+            } else {
+                alert('Please enter a wallet address first');
+            }
+        }
+
+        function saveDepositAddress() {
+            const crypto = document.getElementById('depositCrypto').value;
+            const network = document.getElementById('depositNetwork').value;
+            const address = document.getElementById('depositAddress').value.trim();
+            if (!address) {
+                alert('Please enter a wallet address');
+                return;
+            }
+            alert('Deposit address saved successfully!');
+            closeModal('depositModal');
+        }
+
+        function downloadQRCode() { alert('QR code download initiated'); }
+        function copyAddressFromQR() { navigator.clipboard.writeText(document.getElementById('qrAddress').textContent); alert('Address copied!'); }
 
         // Modal Functions
-        window.closeModal = function (modalId) {
+        function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
-        };
+        }
 
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', function (e) {
@@ -3606,59 +3224,16 @@
             });
         });
 
-        // QR Generation Helpers
-        window.getQrDataWithPrefix = function (address, network, format = 'plain') {
-            console.log("Admin: Generating QR data for", network, address, "Format:", format);
-            if (!address) return '';
-            if (format === 'plain') return address;
-
-            const prefixes = {
-                'Solana': 'solana:',
-                'TRC20': 'tron:',
-                'ERC20': 'ethereum:',
-                'BEP20': 'ethereum:',
-                'BEP2': 'binance:',
-                'Bitcoin': 'bitcoin:',
-                'Dogecoin': 'dogecoin:',
-                'XRP Ledger': 'ripple:'
-            };
-            const prefix = prefixes[network] || '';
-            const result = prefix + address;
-            console.log("Admin: QR Result:", result);
-            return result;
-        };
-
-        window.generateQRCode = function () {
-            console.log("Admin: Manual QR Generate clicked");
-            const address = document.getElementById('depositAddress').value.trim();
-            const network = document.getElementById('depositNetwork').value;
-            const format = document.getElementById('qrFormat').value;
-            if (address) {
-                const qrData = window.getQrDataWithPrefix(address, network, format);
-                const url = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(qrData)}`;
-                document.getElementById('qrPreviewImage').src = url;
-                console.log("Admin: QR Preview Updated to:", url);
-            } else {
-                alert('Please enter a wallet address first');
-            }
-        };
-
         // Initialize
         updateUnreadCount();
 
-        // Auto-generate QR when inputs change
-        const updatePreview = function () {
-            const address = document.getElementById('depositAddress')?.value.trim();
-            const network = document.getElementById('depositNetwork')?.value;
-            const format = document.getElementById('qrFormat')?.value;
-            if (address && address.length > 5) {
-                const qrData = window.getQrDataWithPrefix(address, network, format);
-                document.getElementById('qrPreviewImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(qrData)}`;
+        // Auto-generate QR when address changes
+        document.getElementById('depositAddress')?.addEventListener('input', function () {
+            const address = this.value.trim();
+            if (address.length > 10) {
+                document.getElementById('qrPreviewImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(address)}`;
             }
-        };
-        document.getElementById('depositAddress')?.addEventListener('input', updatePreview);
-        document.getElementById('depositNetwork')?.addEventListener('change', updatePreview);
-        document.getElementById('qrFormat')?.addEventListener('change', updatePreview);
+        });
     </script>
 
     <!-- KYC Image Modal -->
@@ -3694,59 +3269,6 @@
             <div class="mt-6 flex justify-end gap-4 border-t pt-4">
                 <button onclick="closeKYCModal()"
                     class="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 font-medium transition-colors">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit User Modal -->
-    <div class="modal-overlay" id="editUserModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="text-xl font-bold text-gray-800">Edit User Details</h3>
-                <button onclick="closeModal('editUserModal')" class="text-gray-400 hover:text-gray-600">
-                    <i class="ri-close-line text-2xl"></i>
-                </button>
-            </div>
-            <div class="modal-body space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                    <input type="text" id="editUserName" class="w-full border rounded p-2" placeholder="Full Name">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Balance (USDT)</label>
-                    <input type="number" id="editUserBalance" class="w-full border rounded p-2" placeholder="0.00"
-                        step="0.01">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Account Status</label>
-                    <select id="editUserStatus" class="w-full border rounded p-2">
-                        <option value="Active">Active</option>
-                        <option value="Suspended">Suspended</option>
-                        <option value="Pending">Pending</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">KYC Status</label>
-                    <select id="editUserKyc" class="w-full border rounded p-2">
-                        <option value="Verified">Verified</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Rejected">Rejected</option>
-                        <option value="None">None</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Contract Rule</label>
-                    <select id="editUserDeliveryRule" class="w-full border rounded p-2">
-                        <option value="normal">Normal (Market Price)</option>
-                        <option value="win">Always Win</option>
-                        <option value="loss">Always Lose</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="closeModal('editUserModal')" class="btn-secondary">Cancel</button>
-                <button id="saveUserBtn" onclick="saveUserChanges()" class="btn-primary"
-                    style="background: #6a35ff; color: #fff;">Save Changes</button>
             </div>
         </div>
     </div>
